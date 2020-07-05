@@ -29,13 +29,15 @@ const commands = {
         // code: (a, b, c) => [`${a} = ${b}`, `${a} %= ${c}`]
         code: (a, b, c) => {
             const r = newRegister();
-            return [`${r} = ${b}`, `${c}--`, ``, `LOOP ${b}`, `${b} -= ${c}`, `LOOP ${b}`, `${r} = ${b}`, `${r}--`, `END`, `${b}--`, `END`, `${a} = ${r}`]
+            const rr = newRegister();
+            const x = newRegister();
+            return [`${r} = ${b}`, `${x} = ${b}`, `${rr} = ${c}`, `${rr}--`, ``, `LOOP ${b}`, `${x} -= ${rr}`, `LOOP ${x}`, `${r} = ${x}`, `${r}--`, `END`, `${x}--`, `END`, `${a} = ${r}`]
         }
     },
 
     assignment: {
         syntax: `${register} = ${number}`,
-        code: (a, b) => [`${a} = 0`, `${a}++\n`.repeat(b)]
+        code: (a, b) => [`${a} = 0`, ...`${a}++\n`.repeat(b).split("\n")]
     },
 
     plusequals: {
@@ -116,14 +118,20 @@ const transpile = (code) => {
     while (changed) {
         changed = false;
         Object.values(commands).forEach(command => {
+            console.log({command})
             instructions = instructions.map(line => {
+                console.log({line})
                 const [match, ...params] = line.match(`^${command.syntax}$`) || [null];
+                console.log({match})
                 if (match !== null && !command.ignore) {
                     for (const regex of validSyntax) {
-                        if (line.match(`^${regex}$`))
+                        if (line.match(`^${regex}$`)) {
+                            console.log("skipping; not marking as changed")
                             return line;
+                        }
                     } // cannot use Array.prototype.some for some stupid reason
                     changed = true
+                    console.log("marking as changed")
                     return command.code(...params);
                 }
                 return line;
