@@ -1,0 +1,158 @@
+const fs = require("fs");
+
+const register = "([A-Z]+)";
+const number = "(\\d+)";
+
+const usedRegisters = [];
+
+const commands = {
+    addition: {
+        syntax: `${register} = ${register} \\+ ${register}`,
+        code: (a, b, c) => [`${a} = ${b}`, `${a} += ${c}`]
+    },
+
+    subtraction: {
+        syntax: `${register} = ${register} - ${register}`,
+        code: (a, b, c) => [`${a} = ${b}`, `${a} -= ${c}`]
+    },
+
+    multiplication: {
+        syntax: `${register} = ${register} \\* ${register}`,
+        code: (a, b, c) => [`${a} = ${b}`, `${a} *= ${c}`]
+    },
+
+    division: {
+        syntax: `${register} = ${register} \\/ ${register}`,
+        code: (a, b, c) => [`${a} = ${b}`, `${a} /= ${c}`]
+    },
+
+    mod: {
+        syntax: `${register} = ${register} % ${register}`,
+        code: (a, b, c) => [`${a} = ${b}`, `${a} %= ${c}`]
+    },
+
+    assignment: {
+        syntax: `${register} = ${number}`,
+        code: (a, b) => [`${a} = 0`, `${a}++\n`.repeat(b)]
+    },
+
+    plusequals: {
+        syntax: `${register} \\+= ${register}`,
+        code: (a, b) => [`LOOP ${b}`, `${a}++`, `END`]
+    },
+
+    minusequals: {
+        syntax: `${register} -= ${register}`,
+        code: (a, b) => [`LOOP ${b}`, `${a}--`, `END`]
+    },
+
+    timesequals: {
+        syntax: `${register} \\*= ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${r} = ${a}`, `${a} = 0`, `LOOP ${b}`, `${a} += ${r}`, `END`];
+        }
+    },
+
+    divequals: {
+        syntax: `${register} \\/= ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${b}--`, `${r} = 0`, `LOOP ${a}`, `${a} -= ${b}`, `${r} += ${a}`, `${a}--`, `${r} -= ${a}`, `END`, `${a} = ${r}`]
+        }
+    },
+
+    increment: {
+        syntax: `${register}\\+\\+`,
+        code: (a) => [`${a} = ${a} + 1`]
+    },
+
+    decrement: {
+        syntax: `${register}--`,
+        code: (a) => {
+            const r = newRegister();
+            return [`${r} = 0`, `LOOP ${a}`, `${a} = ${r}`, `${r}++`, `END`];
+        }
+    },
+
+    identity: {
+        syntax: `${register} = ${register}`,
+        code: (a, b) => {
+            return a === b ? [] : `${a} = ${b}`;
+        },
+        ignore: true
+    }
+
+};
+
+const validSyntax = [`${register} = 0`];
+
+
+const newRegister = () => {
+    let a = "JS"
+
+    while (usedRegisters.includes(a))
+        a += "A"
+
+    usedRegisters.push(a);
+    return a
+}
+
+const transpile = (code) => {
+
+
+    let instructions = code.split("\n")
+        .map(i => i.split("//").shift())
+        .map(i => i.trim());
+
+    let changed = true;
+
+    while (changed) {
+        changed = false;
+        Object.values(commands).forEach(command => {
+            instructions = instructions.map(line => {
+                const [match, ...params] = line.match(`^${command.syntax}$`) || [null];
+                if (match !== null && !command.ignore) {
+                    for (const regex of validSyntax) {
+                        if (line.match(`^${regex}$`))
+                            return line;
+                    }
+                    changed = true
+                    return command.code(...params);
+                }
+                return line;
+            }).flat()
+        });
+    }
+    return instructions;
+}
+
+const transpileFile = (fileName, destinationFileName) => {
+    const program = fs.readFileSync(fileName).toString();
+    fs.writeFile(destinationFileName || fileName.replace(".loop", ".transpiled.loop"),
+        transpile(program).join("\n"), console.log)
+}
+
+module.exports = transpile;
+
+
+// Polyfill ECMAScript 2019
+if (!Array.prototype.flat) {
+    Object.defineProperty(Array.prototype, 'flat',
+        {
+            value: function (depth = 1, stack = []) {
+                for (let item of this) {
+                    if (item instanceof Array && depth > 0) {
+                        item.flat(depth - 1, stack);
+                    } else {
+                        stack.push(item);
+                    }
+                }
+
+                return stack;
+            }
+        });
+}
+
+
+transpileFile(process.argv[2], process.argv[3]);

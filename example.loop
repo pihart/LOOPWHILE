@@ -1,0 +1,9 @@
+Y--
+
+A = 0
+LOOP X
+    X -= Y
+    A += X
+    X--
+    A -= X
+END
