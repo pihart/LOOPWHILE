@@ -3,6 +3,7 @@ const number = `(\\d+)`;
 
 const usedRegisters = [];
 
+// TODO: IF X and IF0 X (Just replace this line with the necessary loop; no need to worry about the inside or END
 const commands = {
     addition: {
         syntax: `${register} = ${register} \\+ ${register}`,
@@ -81,6 +82,72 @@ const commands = {
         code: (a) => {
             const r = newRegister();
             return [`${r} = 0`, `LOOP ${a}`, `${a} = ${r}`, `${r}++`, `END`];
+        }
+    },
+
+    if: {
+        syntax: `IF ${register} == ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${r} = 1`, `IF ${a} >= ${b}`, `IF ${a} <= ${b}`, `${r} = 0`, `END`, `END`, `IF0 ${r}`];
+        }
+    },
+
+    ifne: {
+        syntax: `IF ${register} != ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${r} = 1`, `IF ${a} >= ${b}`, `IF ${a} <= ${b}`, `${r} = 0`, `END`, `END`, `IF+ ${r}`];
+        }
+    },
+
+    ifgreater: {
+        syntax: `IF ${register} > ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${r} = ${a} - ${b}`, `IF+ ${r}`];
+        }
+    },
+
+
+    ifless: {
+        syntax: `IF ${register} < ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${r} = ${b} - ${a}`, `IF+ ${r}`];
+        }
+    },
+
+    ifgeq: {
+        syntax: `IF ${register} >= ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${r} = ${b} - ${a}`, `IF0 ${r}`];
+        }
+    },
+
+
+    ifleq: {
+        syntax: `IF ${register} <= ${register}`,
+        code: (a, b) => {
+            const r = newRegister();
+            return [`${r} = ${a} - ${b}`, `IF0 ${r}`];
+        }
+    },
+
+    ifpos: {
+        syntax: `IF\\+ ${register}`,
+        code: a => {
+            const r = newRegister();
+            return [`${r} = 0`, `LOOP ${a}`, `${r} = 1`, `END`, `LOOP ${r}`];
+        }
+    },
+
+    if0: {
+        syntax: `IF0 ${register}`,
+        code: a => {
+            const r = newRegister();
+            return [`${r} = 1`, `LOOP ${a}`, `${r} = 0`, `END`, `LOOP ${r}`];
         }
     },
 
