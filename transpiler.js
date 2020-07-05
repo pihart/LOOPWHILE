@@ -118,20 +118,20 @@ const transpile = (code) => {
     while (changed) {
         changed = false;
         Object.values(commands).forEach(command => {
-            console.log({command})
+            // console.log({command})
             instructions = instructions.map(line => {
-                console.log({line})
+                // console.log({line})
                 const [match, ...params] = line.match(`^${command.syntax}$`) || [null];
-                console.log({match})
+                // console.log({match})
                 if (match !== null && !command.ignore) {
                     for (const regex of validSyntax) {
                         if (line.match(`^${regex}$`)) {
-                            console.log("skipping; not marking as changed")
+                            // console.log("skipping; not marking as changed")
                             return line;
                         }
                     } // cannot use Array.prototype.some for some stupid reason
                     changed = true
-                    console.log("marking as changed")
+                    // console.log("marking as changed")
                     return command.code(...params);
                 }
                 return line;
