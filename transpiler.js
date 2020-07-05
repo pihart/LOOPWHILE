@@ -1,5 +1,5 @@
-const register = "([A-Z]+)";
-const number = "(\\d+)";
+const register = `([A-Z]+)`;
+const number = `(\\d+)`;
 
 const usedRegisters = [];
 
@@ -26,7 +26,11 @@ const commands = {
 
     mod: {
         syntax: `${register} = ${register} % ${register}`,
-        code: (a, b, c) => [`${a} = ${b}`, `${a} %= ${c}`]
+        // code: (a, b, c) => [`${a} = ${b}`, `${a} %= ${c}`]
+        code: (a, b, c) => {
+            const r = newRegister();
+            return [`${r} = ${b}`, `${c}--`, ``, `LOOP ${b}`, `${b} -= ${c}`, `LOOP ${b}`, `${r} = ${b}`, `${r}--`, `END`, `${b}--`, `END`, `${a} = ${r}`]
+        }
     },
 
     assignment: {
@@ -60,6 +64,11 @@ const commands = {
         }
     },
 
+    modequals: {
+        syntax: `${register} %= ${register}`,
+        code: (a, b) => [`${a} = ${a} % ${b}`]
+    },
+
     increment: {
         syntax: `${register}\\+\\+`,
         code: (a) => [`${a} = ${a} + 1`]
@@ -87,10 +96,10 @@ const validSyntax = [`${register} = 0`];
 
 
 const newRegister = () => {
-    let a = "JS"
+    let a = `JS`
 
     while (usedRegisters.includes(a))
-        a += "A"
+        a += `A`
 
     usedRegisters.push(a);
     return a
@@ -98,9 +107,8 @@ const newRegister = () => {
 
 const transpile = (code) => {
 
-
-    let instructions = code.split("\n")
-        .map(i => i.split("//").shift())
+    let instructions = code.split(`\n`)
+        .map(i => i.split(`//`).shift())
         .map(i => i.trim());
 
     let changed = true;
@@ -114,7 +122,7 @@ const transpile = (code) => {
                     for (const regex of validSyntax) {
                         if (line.match(`^${regex}$`))
                             return line;
-                    }
+                    } // cannot use Array.prototype.some for some stupid reason
                     changed = true
                     return command.code(...params);
                 }

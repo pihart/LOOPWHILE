@@ -1,5 +1,5 @@
 const fs = require("fs");
-const transpiler = require("./transpiler")
+const transpile = require("./transpiler")
 
 const transpileFile = (fileName, destinationFileName) => {
     const program = fs.readFileSync(fileName).toString();
