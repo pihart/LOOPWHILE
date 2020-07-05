@@ -1,5 +1,3 @@
-const fs = require("fs");
-
 const register = "([A-Z]+)";
 const number = "(\\d+)";
 
@@ -127,11 +125,6 @@ const transpile = (code) => {
     return instructions;
 }
 
-const transpileFile = (fileName, destinationFileName) => {
-    const program = fs.readFileSync(fileName).toString();
-    fs.writeFile(destinationFileName || fileName.replace(".loop", ".transpiled.loop"),
-        transpile(program).join("\n"), console.log)
-}
 
 module.exports = transpile;
 
@@ -153,6 +146,3 @@ if (!Array.prototype.flat) {
             }
         });
 }
-
-
-transpileFile(process.argv[2], process.argv[3]);
