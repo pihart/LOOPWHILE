@@ -109,7 +109,6 @@ const commands = {
         }
     },
 
-
     ifless: {
         syntax: `IF ${register} < ${register}`,
         code: (a, b) => {
@@ -125,7 +124,6 @@ const commands = {
             return [`${r} = ${b} - ${a}`, `IF0 ${r}`];
         }
     },
-
 
     ifleq: {
         syntax: `IF ${register} <= ${register}`,
