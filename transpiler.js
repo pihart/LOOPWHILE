@@ -235,7 +235,7 @@ const indentCode = instructions => {
                 indent = `    `.repeat(stack++);
                 break;
             case instructionTypes.end:
-                indent = `    `.repeat(stack--);
+                indent = `    `.repeat(--stack);
                 break;
             case instructionTypes.flat:
                 indent = `    `.repeat(stack);
