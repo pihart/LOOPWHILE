@@ -307,7 +307,7 @@ const transpile = (code) => {
                     }
                 }
                 return line;
-            }).flat()
+            }).filter(line => line).flat()
         });
     }
     console.log("transpilation complete")

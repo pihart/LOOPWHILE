@@ -1,0 +1,30 @@
+A = B
+A = B
+Y = 0
+Y = Y + 1
+JSAA = 0
+JSAA = JSAA + 1
+JSAA = JSAA + 1
+LOOP JSAA
+    JS = Y
+    Y = 0
+    LOOP X
+        LOOP JS
+            Y = Y + 1
+        END
+    END
+END
+Z = 0
+Z = Z + 1
+LOOP X
+    JSA = Z
+    Z = 0
+    JSAAA = 0
+    JSAAA = JSAAA + 1
+    JSAAA = JSAAA + 1
+    LOOP JSAAA
+        LOOP JSA
+            Z = Z + 1
+        END
+    END
+END
