@@ -1,9 +1,11 @@
 const register = `([A-Z]+)`;
+const functionName = `([a-z]+)`;
 const number = `(\\d+)`;
 
 const usedRegisters = [];
 
-// TODO: IF X and IF0 X (Just replace this line with the necessary loop; no need to worry about the inside or END
+
+// TODO: arrays, function x(a, b, ..., f)       Call functions with x()
 const commands = {
     addition: {
         syntax: `${register} = ${register} \\+ ${register}`,
@@ -159,7 +161,27 @@ const commands = {
 
 };
 
+const instructionTypes = {
+    begin: Symbol(),
+    end: Symbol(),
+    flat: Symbol()
+}
+
 const validSyntax = [`${register} = 0`];
+
+const type = instruction => {
+
+    for (const pattern of [`LOOP .+`, "IF .+", "IF0 .+", "LOOP .+", `function ${functionName}\((.*)\)`].map(s => `^${s}$`)) {
+        if (instruction.match(pattern))
+            return instructionTypes.begin;
+    }
+
+    if (instruction.match("^END$"))
+        return instructionTypes.end;
+
+    return instructionTypes.flat;
+
+}
 
 
 const newRegister = () => {
@@ -172,6 +194,7 @@ const newRegister = () => {
     return a
 }
 
+
 const transpile = (code) => {
 
     let instructions = code.split(`\n`)
@@ -183,29 +206,46 @@ const transpile = (code) => {
     while (changed) {
         changed = false;
         Object.values(commands).forEach(command => {
-            // console.log({command})
             instructions = instructions.map(line => {
-                // console.log({line})
                 const [match, ...params] = line.match(`^${command.syntax}$`) || [null];
-                // console.log({match})
                 if (match !== null && !command.ignore) {
                     for (const regex of validSyntax) {
                         if (line.match(`^${regex}$`)) {
-                            // console.log("skipping; not marking as changed")
                             return line;
                         }
-                    } // cannot use Array.prototype.some for some stupid reason
+                    }
                     changed = true
-                    // console.log("marking as changed")
                     return command.code(...params);
                 }
                 return line;
             }).flat()
         });
     }
-    return instructions;
+    return indentCode(instructions);
 }
 
+const indentCode = instructions => {
+    let stack = 0;
+
+    for (let i = 0; i < instructions.length; i++) {
+
+        let indent;
+        switch (type(instructions[i])) {
+            case instructionTypes.begin:
+                indent = `    `.repeat(stack++);
+                break;
+            case instructionTypes.end:
+                indent = `    `.repeat(stack--);
+                break;
+            case instructionTypes.flat:
+                indent = `    `.repeat(stack);
+        }
+
+        instructions[i] = indent + instructions[i];
+    }
+
+    return instructions;
+}
 
 module.exports = transpile;
 
