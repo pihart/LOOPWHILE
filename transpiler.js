@@ -1,35 +1,37 @@
 const register = `([A-Z]+)`;
 const functionName = `([a-z]+)`;
 const number = `(\\d+)`;
+const positive = `([1-9]\\d*)`;
+const regnum = `([A-Z]+|\\d+)`
+
+const functionRegex = `function ${functionName}\((.*)\)`;
 
 const usedRegisters = [];
-
 
 // TODO: arrays, function x(a, b, ..., f)       Call functions with x()
 const commands = {
     addition: {
-        syntax: `${register} = ${register} \\+ ${register}`,
-        code: (a, b, c) => [`${a} = ${b}`, `${a} += ${c}`]
+        syntax: `${register} = ${regnum} \\+ ${regnum}`,
+        code: (a, b, c) => a === b && c === "1" ? null : [`${a} = ${b}`, `${a} += ${c}`]
     },
 
     subtraction: {
-        syntax: `${register} = ${register} - ${register}`,
+        syntax: `${register} = ${regnum} - ${regnum}`,
         code: (a, b, c) => [`${a} = ${b}`, `${a} -= ${c}`]
     },
 
     multiplication: {
-        syntax: `${register} = ${register} \\* ${register}`,
+        syntax: `${register} = ${regnum} \\* ${regnum}`,
         code: (a, b, c) => [`${a} = ${b}`, `${a} *= ${c}`]
     },
 
     division: {
-        syntax: `${register} = ${register} \\/ ${register}`,
+        syntax: `${register} = ${regnum} \\/ ${regnum}`,
         code: (a, b, c) => [`${a} = ${b}`, `${a} /= ${c}`]
     },
 
     mod: {
-        syntax: `${register} = ${register} % ${register}`,
-        // code: (a, b, c) => [`${a} = ${b}`, `${a} %= ${c}`]
+        syntax: `${register} = ${regnum} % ${regnum}`,
         code: (a, b, c) => {
             const r = newRegister();
             const rr = newRegister();
@@ -38,23 +40,35 @@ const commands = {
         }
     },
 
+    exponentiation: {
+        syntax: `${register} = ${regnum} \\*\\* ${regnum}`,
+        code: (a, b, c) => {
+            return [
+                `${a} = 1`,
+                `LOOP ${c}`,
+                `${a} *= ${b}`,
+                `END`
+            ]
+        }
+    },
+
     assignment: {
-        syntax: `${register} = ${number}`,
+        syntax: `${register} = ${positive}`,
         code: (a, b) => [`${a} = 0`, ...`${a}++\n`.repeat(b).split("\n")]
     },
 
     plusequals: {
-        syntax: `${register} \\+= ${register}`,
+        syntax: `${register} \\+= ${regnum}`,
         code: (a, b) => [`LOOP ${b}`, `${a}++`, `END`]
     },
 
     minusequals: {
-        syntax: `${register} -= ${register}`,
+        syntax: `${register} -= ${regnum}`,
         code: (a, b) => [`LOOP ${b}`, `${a}--`, `END`]
     },
 
     timesequals: {
-        syntax: `${register} \\*= ${register}`,
+        syntax: `${register} \\*= ${regnum}`,
         code: (a, b) => {
             const r = newRegister();
             return [`${r} = ${a}`, `${a} = 0`, `LOOP ${b}`, `${a} += ${r}`, `END`];
@@ -62,16 +76,22 @@ const commands = {
     },
 
     divequals: {
-        syntax: `${register} \\/= ${register}`,
-        code: (a, b) => {
+        syntax: `${register} \\/= ${regnum}`,
+        code: (a, bb) => {
             const r = newRegister();
-            return [`${b}--`, `${r} = 0`, `LOOP ${a}`, `${a} -= ${b}`, `${r} += ${a}`, `${a}--`, `${r} -= ${a}`, `END`, `${a} = ${r}`]
+            const b = newRegister();
+            return [`${b} = ${bb}`, `${b}--`, `${r} = 0`, `LOOP ${a}`, `${a} -= ${b}`, `${r} += ${a}`, `${a}--`, `${r} -= ${a}`, `END`, `${a} = ${r}`]
         }
     },
 
     modequals: {
-        syntax: `${register} %= ${register}`,
+        syntax: `${register} %= ${regnum}`,
         code: (a, b) => [`${a} = ${a} % ${b}`]
+    },
+
+    expequals: {
+        syntax: `${register} \\*\\*= ${regnum}`,
+        code: (a, b) => [`${a} = ${a} ** ${b}`]
     },
 
     increment: {
@@ -87,8 +107,16 @@ const commands = {
         }
     },
 
+    loop: {
+        syntax: `LOOP ${number}`,
+        code: a => {
+            const r = newRegister();
+            return [`${r} = ${a}`, `LOOP ${r}`];
+        }
+    },
+
     if: {
-        syntax: `IF ${register} == ${register}`,
+        syntax: `IF ${regnum} == ${regnum}`,
         code: (a, b) => {
             const r = newRegister();
             return [`${r} = 1`, `IF ${a} >= ${b}`, `IF ${a} <= ${b}`, `${r} = 0`, `END`, `END`, `IF0 ${r}`];
@@ -96,7 +124,7 @@ const commands = {
     },
 
     ifne: {
-        syntax: `IF ${register} != ${register}`,
+        syntax: `IF ${regnum} != ${regnum}`,
         code: (a, b) => {
             const r = newRegister();
             return [`${r} = 1`, `IF ${a} >= ${b}`, `IF ${a} <= ${b}`, `${r} = 0`, `END`, `END`, `IF+ ${r}`];
@@ -104,7 +132,7 @@ const commands = {
     },
 
     ifgreater: {
-        syntax: `IF ${register} > ${register}`,
+        syntax: `IF ${regnum} > ${regnum}`,
         code: (a, b) => {
             const r = newRegister();
             return [`${r} = ${a} - ${b}`, `IF+ ${r}`];
@@ -112,7 +140,7 @@ const commands = {
     },
 
     ifless: {
-        syntax: `IF ${register} < ${register}`,
+        syntax: `IF ${regnum} < ${regnum}`,
         code: (a, b) => {
             const r = newRegister();
             return [`${r} = ${b} - ${a}`, `IF+ ${r}`];
@@ -120,7 +148,7 @@ const commands = {
     },
 
     ifgeq: {
-        syntax: `IF ${register} >= ${register}`,
+        syntax: `IF ${regnum} >= ${regnum}`,
         code: (a, b) => {
             const r = newRegister();
             return [`${r} = ${b} - ${a}`, `IF0 ${r}`];
@@ -128,7 +156,7 @@ const commands = {
     },
 
     ifleq: {
-        syntax: `IF ${register} <= ${register}`,
+        syntax: `IF ${regnum} <= ${regnum}`,
         code: (a, b) => {
             const r = newRegister();
             return [`${r} = ${a} - ${b}`, `IF0 ${r}`];
@@ -136,7 +164,7 @@ const commands = {
     },
 
     ifpos: {
-        syntax: `IF\\+ ${register}`,
+        syntax: `IF\\+ ${regnum}`,
         code: a => {
             const r = newRegister();
             return [`${r} = 0`, `LOOP ${a}`, `${r} = 1`, `END`, `LOOP ${r}`];
@@ -144,19 +172,34 @@ const commands = {
     },
 
     if0: {
-        syntax: `IF0 ${register}`,
+        syntax: `IF0 ${regnum}`,
         code: a => {
             const r = newRegister();
             return [`${r} = 1`, `LOOP ${a}`, `${r} = 0`, `END`, `LOOP ${r}`];
         }
     },
 
+    // base 10
+    // LAST, REST = ARRAY
+    // pop: {
+    //     syntax: `${register}, ${register} = pop ${register}`,
+    //     code: (a, b, c) => [`${b}, ${a} = split ${c} 1`]
+    // },
+
+    // // base 10
+    // // LAST, REST = ARRAY
+    // split: {
+    //     syntax: `${register}, ${register} = split ${register} ${register}`,
+    //     code: (a, b, c) => {
+    //         return [
+    //             `,
+    //             ${a} = split ${c} 1`];
+    //     }
+    // },
+
     identity: {
         syntax: `${register} = ${register}`,
-        code: (a, b) => {
-            return a === b ? [] : `${a} = ${b}`;
-        },
-        ignore: true
+        code: (a, b) => a === b ? undefined : null
     }
 
 };
@@ -167,11 +210,13 @@ const instructionTypes = {
     flat: Symbol()
 }
 
-const validSyntax = [`${register} = 0`];
+// const validSyntax = [`${register} = 0`];
 
 const type = instruction => {
 
-    for (const pattern of [`LOOP .+`, "IF .+", "IF0 .+", "LOOP .+", `function ${functionName}\((.*)\)`].map(s => `^${s}$`)) {
+    for (const pattern of [`LOOP .+`, "IF .+", "IF0 .+", "LOOP .+", "WHILE .*",
+        //functionRegex
+    ].map(s => `^${s}$`)) {
         if (instruction.match(pattern))
             return instructionTypes.begin;
     }
@@ -194,6 +239,48 @@ const newRegister = () => {
     return a
 }
 
+// no function nesting allowed
+/*
+const defineFunctions = instructions => {
+    let stack = 0;
+    let stackAtFunction;
+    let parameters;
+
+    for (let i = 0; i < instructions.length; i++) {
+        let instruction = instructions[i];
+        switch (type(instruction)) {
+            case instructionTypes.begin:
+                if (parameters) {
+
+                } else {
+                    let match = instruction.match(`^${functionRegex}$`)[1];
+                    if (match) {
+                        stackAtFunction = stack;
+                        match = match[2].split(", ");
+                        parameters = {};
+                        match.forEach(param => {
+                            parameters[param] = newRegister()
+                        })
+                    }
+                }
+                stack++;
+                break;
+            case instructionTypes.end:
+                stack--;
+                if (parameters) {
+
+                }
+                break;
+            case instructionTypes.flat:
+                indent = `    `.repeat(stack);
+        }
+
+        instructions[i] = instruction;
+    }
+
+    return instructions;
+}
+*/
 
 const transpile = (code) => {
 
@@ -209,18 +296,21 @@ const transpile = (code) => {
             instructions = instructions.map(line => {
                 const [match, ...params] = line.match(`^${command.syntax}$`) || [null];
                 if (match !== null && !command.ignore) {
-                    for (const regex of validSyntax) {
-                        if (line.match(`^${regex}$`)) {
-                            return line;
+                    let newCode = command.code(...params);
+                    if (newCode !== null && newCode !== line) {
+                        if (newCode === undefined) {
+                            newCode = "";
                         }
+                        changed = true;
+                        // console.log("changed on", command, "to", newCode, "with line", line)
+                        return newCode;
                     }
-                    changed = true
-                    return command.code(...params);
                 }
                 return line;
             }).flat()
         });
     }
+    console.log("transpilation complete")
     return indentCode(instructions);
 }
 
