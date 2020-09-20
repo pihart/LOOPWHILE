@@ -1,0 +1,14 @@
+P = 0
+P = P + 1
+LOOP X
+    JS = P
+    P = 0
+    JSA = 0
+    JSA = JSA + 1
+    JSA = JSA + 1
+    LOOP JSA
+        LOOP JS
+            P = P + 1
+        END
+    END
+END

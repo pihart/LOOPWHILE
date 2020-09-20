@@ -1,0 +1,33 @@
+A = X
+JSA = Y
+JSAA = 0
+LOOP JSA
+    JSA = JSAA
+    JSAA = JSAA + 1
+END
+JS = 0
+LOOP A
+    LOOP JSA
+        JSAAAA = 0
+        LOOP A
+            A = JSAAAA
+            JSAAAA = JSAAAA + 1
+        END
+    END
+    LOOP A
+        JS = JS + 1
+    END
+    JSAAA = 0
+    LOOP A
+        A = JSAAA
+        JSAAA = JSAAA + 1
+    END
+    LOOP A
+        JSAAAAA = 0
+        LOOP JS
+            JS = JSAAAAA
+            JSAAAAA = JSAAAAA + 1
+        END
+    END
+END
+A = JS

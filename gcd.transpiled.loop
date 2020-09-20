@@ -1,0 +1,83 @@
+D = 0
+G = 0
+G = G + 1
+LOOP X
+    D = D + 1
+    JS = X
+    JSAA = X
+    JSA = D
+    JSAAAAAA = 0
+    LOOP JSA
+        JSA = JSAAAAAA
+        JSAAAAAA = JSAAAAAA + 1
+    END
+    LOOP X
+        LOOP JSA
+            JSAAAAAAA = 0
+            LOOP JSAA
+                JSAA = JSAAAAAAA
+                JSAAAAAAA = JSAAAAAAA + 1
+            END
+        END
+        LOOP JSAA
+            JS = JSAA
+            JSAAAAAAAA = 0
+            LOOP JS
+                JS = JSAAAAAAAA
+                JSAAAAAAAA = JSAAAAAAAA + 1
+            END
+        END
+        JSAAAAAAAAA = 0
+        LOOP JSAA
+            JSAA = JSAAAAAAAAA
+            JSAAAAAAAAA = JSAAAAAAAAA + 1
+        END
+    END
+    R = JS
+    JSAAAAAAAAAAAAAA = 0
+    JSAAAAAAAAAAAAAA = JSAAAAAAAAAAAAAA + 1
+    LOOP R
+        JSAAAAAAAAAAAAAA = 0
+    END
+    LOOP JSAAAAAAAAAAAAAA
+        JSAAA = Y
+        JSAAAAA = Y
+        JSAAAA = D
+        JSAAAAAAAAAA = 0
+        LOOP JSAAAA
+            JSAAAA = JSAAAAAAAAAA
+            JSAAAAAAAAAA = JSAAAAAAAAAA + 1
+        END
+        LOOP Y
+            LOOP JSAAAA
+                JSAAAAAAAAAAA = 0
+                LOOP JSAAAAA
+                    JSAAAAA = JSAAAAAAAAAAA
+                    JSAAAAAAAAAAA = JSAAAAAAAAAAA + 1
+                END
+            END
+            LOOP JSAAAAA
+                JSAAA = JSAAAAA
+                JSAAAAAAAAAAAA = 0
+                LOOP JSAAA
+                    JSAAA = JSAAAAAAAAAAAA
+                    JSAAAAAAAAAAAA = JSAAAAAAAAAAAA + 1
+                END
+            END
+            JSAAAAAAAAAAAAA = 0
+            LOOP JSAAAAA
+                JSAAAAA = JSAAAAAAAAAAAAA
+                JSAAAAAAAAAAAAA = JSAAAAAAAAAAAAA + 1
+            END
+        END
+        R = JSAAA
+        JSAAAAAAAAAAAAAAA = 0
+        JSAAAAAAAAAAAAAAA = JSAAAAAAAAAAAAAAA + 1
+        LOOP R
+            JSAAAAAAAAAAAAAAA = 0
+        END
+        LOOP JSAAAAAAAAAAAAAAA
+            G = D
+        END
+    END
+END

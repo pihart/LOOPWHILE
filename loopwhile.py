@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Copied from CJ Quines
+
 """
 this is a LOOP/WHILE interpreter, written for PROMYS 2020
 the base implementation is on https://repl.it/@cjquines/LOOPWHILE

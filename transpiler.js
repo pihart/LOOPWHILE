@@ -2,7 +2,8 @@ const register = `([A-Z]+)`;
 const functionName = `([a-z]+)`;
 const number = `(\\d+)`;
 const positive = `([1-9]\\d*)`;
-const regnum = `([A-Z]+|\\d+)`
+const regnum = `([A-Z]+|\\d+)`;
+const array = `\\[(.*)\\]`;
 
 const functionRegex = `function ${functionName}\((.*)\)`;
 
@@ -200,7 +201,26 @@ const commands = {
     identity: {
         syntax: `${register} = ${register}`,
         code: (a, b) => a === b ? undefined : null
-    }
+    },
+
+    setArray: {
+        syntax: `${register} = ${array}`,
+        code: (a, arr) => {
+            arr = arr.split(",")
+                // .map(el => [...(+el).toString(8)].map(a=>+a+1).join(""));
+                .map(el => (+el).toString(2));
+            return [`${a} = ${parseInt(arr.join("2"), 3)}`];
+        }
+    },
+
+    // push: {
+    //     syntax: `${register}.push\\(${regnum}\\)`,
+    //     code: (reg, val) => {
+    //         // Loop val
+    //         // r = val / 2
+    //         return [reg]
+    //     }
+    // }
 
 };
 
@@ -298,11 +318,7 @@ const transpile = (code) => {
                 if (match !== null && !command.ignore) {
                     let newCode = command.code(...params);
                     if (newCode !== null && newCode !== line) {
-                        if (newCode === undefined) {
-                            newCode = "";
-                        }
                         changed = true;
-                        // console.log("changed on", command, "to", newCode, "with line", line)
                         return newCode;
                     }
                 }
@@ -310,10 +326,8 @@ const transpile = (code) => {
             }).filter(line => line).flat()
         });
     }
-    console.log("transpilation complete")
     return indentCode(instructions);
 }
-
 const indentCode = instructions => {
     let stack = 0;
 
@@ -338,22 +352,3 @@ const indentCode = instructions => {
 }
 
 module.exports = transpile;
-
-
-// Polyfill ECMAScript 2019
-if (!Array.prototype.flat) {
-    Object.defineProperty(Array.prototype, 'flat',
-        {
-            value: function (depth = 1, stack = []) {
-                for (let item of this) {
-                    if (item instanceof Array && depth > 0) {
-                        item.flat(depth - 1, stack);
-                    } else {
-                        stack.push(item);
-                    }
-                }
-
-                return stack;
-            }
-        });
-}

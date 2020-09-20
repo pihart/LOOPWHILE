@@ -1,0 +1,8 @@
+A = X
+JS = A
+A = 0
+LOOP Y
+    LOOP JS
+        A = A + 1
+    END
+END

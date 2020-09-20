@@ -1,0 +1,19 @@
+// An array is a number that encodes a list of numbers, called its entries
+// Arrays have the property that when written as a string in base 10,
+// it is the right to left concatenation of its entries (as nonary strings using the digits {1,...,9}) with the digit 0
+ARRAY = 503
+LENGTH = 0
+
+STR = 0
+FOUND = 0
+LOOP ITERATIONS
+    NUM = ARRAY % 10
+    IF+ NUM
+        ARRAY /= 10
+        NUM--
+        POW = 9 ** LENGTH
+        NUM *= POW
+        STR += NUM
+        LENGTH++
+    END
+END

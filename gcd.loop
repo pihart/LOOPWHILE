@@ -1,0 +1,13 @@
+D = 0
+G = 1
+LOOP X
+    D++
+
+    R = X % D
+    IF0 R
+        R = Y % D
+        IF0 R
+            G = D
+        END
+    END
+END
