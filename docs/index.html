@@ -37,5 +37,7 @@ Do not use register names that begin with <em>JS</em> unless you are not using t
        value="Convert">
 <script src="index.js"></script>
 <script>
-    document.querySelector('#code').value = transpile(document.querySelector('#code').value).join("\n");
+    const submit = () => {
+        document.querySelector('#code').value = transpile(document.querySelector('#code').value).join("\n");
+    };
 </script>
