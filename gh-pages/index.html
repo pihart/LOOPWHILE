@@ -1,0 +1,38 @@
+---
+layout: default
+title: LOOP/WHILE Augmented Syntax Transpiler and Beautifier
+---
+<p>Current valid syntax:
+<ul>
+    <li>A = B + C</li>
+    <li>A = B - C</li>
+    <li>A = B * C</li>
+    <li>A = B / C (integer division)</li>
+    <li>A = B % C</li>
+    <li>A = B ** C (exponentiation)</li>
+    <li>A += B</li>
+    <li>A -= B</li>
+    <li>A *= B</li>
+    <li>A /= B</li>
+    <li>A %= B</li>
+    <li>A **= B</li>
+    <li>A++</li>
+    <li>A--</li>
+    <li>IF A == B</li>
+    <li>IF A != B</li>
+    <li>IF A < B</li>
+    <li>IF A > B</li>
+    <li>IF A <= B</li>
+    <li>IF A >=B</li>
+    <li>IF0 A</li>
+    <li>IF+ A</li>
+    <li>[CODE] //[comment]</li>
+</ul>
+You can use numbers instead of registers everywhere except the left-hand-side of assignments (saying 2 = X would make no sense).
+Do not use register names that begin with <em>JS</em> unless you are not using the extended syntax.
+</p>
+<textarea placeholder="Enter augmented syntax code; Submitting will replace this code with transpiled code." id="code"
+          style="width: 100%" rows="20"></textarea>    <br>
+<input type="button" onclick="document.querySelector('#code').value=transpile(document.querySelector('#code').value)"
+       value="Convert">
+<script src="index.js"></script>
