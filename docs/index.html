@@ -33,6 +33,9 @@ Do not use register names that begin with <em>JS</em> unless you are not using t
 </p>
 <textarea placeholder="Enter augmented syntax code; Submitting will replace this code with transpiled code." id="code"
           style="width: 100%" rows="20"></textarea>    <br>
-<input type="button" onclick="document.querySelector('#code').value=transpile(document.querySelector('#code').value)"
+<input type="submit" onclick="submit()"
        value="Convert">
 <script src="index.js"></script>
+<script>
+    document.querySelector('#code').value = transpile(document.querySelector('#code').value).join("\n");
+</script>
