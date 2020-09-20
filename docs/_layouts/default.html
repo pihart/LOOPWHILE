@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>{{ page.title | default: layout.title }}</title>
+
+    {% if page.math | default: layout.math %}
+    {% if page.delimiters | default: layout.delimiters %}
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+
+    </script>
+    {% endif %}
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
+    {% endif %}
+</head>
+
+<body style="padding: 20px">
+
+<h1>{{ page.title | default: layout.title }}</h1>
+
+{{ content }}
+
+</body>
+
+</html>
