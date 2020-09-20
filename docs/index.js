@@ -326,6 +326,7 @@ const transpile = (code) => {
             }).filter(line => line).flat()
         });
     }
+    usedRegisters.length = 0;
     return indentCode(instructions);
 }
 const indentCode = instructions => {
