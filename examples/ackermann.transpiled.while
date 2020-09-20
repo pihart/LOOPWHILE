@@ -1,0 +1,73 @@
+// incomplete since array data type was abandoned
+
+STACK = 0
+LENGTH = 0
+LENGTH = LENGTH + 1
+POPSTACK = 0
+WHILE LENGTH != 0
+    JSAAAA = 0
+    LOOP POPSTACK
+        JSAAAA = 0
+        JSAAAA = JSAAAA + 1
+    END
+    LOOP JSAAAA
+        M = STACK.pop()
+        JS = 0
+        LOOP LENGTH
+            LENGTH = JS
+            JS = JS + 1
+        END
+        POPSTACK = 0
+    END
+    JSAAAAAAA = 0
+    JSAAAAAAA = JSAAAAAAA + 1
+    LOOP M
+        JSAAAAAAA = 0
+    END
+    LOOP JSAAAAAAA
+        N = N + 1
+        POPSTACK = 0
+        POPSTACK = POPSTACK + 1
+    END
+    JSAAAAA = 0
+    LOOP M
+        JSAAAAA = 0
+        JSAAAAA = JSAAAAA + 1
+    END
+    LOOP JSAAAAA
+        NCOPY = N
+        JSAAAAAAAA = 0
+        JSAAAAAAAA = JSAAAAAAAA + 1
+        LOOP N
+            JSAAAAAAAA = 0
+        END
+        LOOP JSAAAAAAAA
+            JSA = 0
+            LOOP M
+                M = JSA
+                JSA = JSA + 1
+            END
+            N = N + 1
+        END
+        JSAAAAAA = 0
+        LOOP NCOPY
+            JSAAAAAA = 0
+            JSAAAAAA = JSAAAAAA + 1
+        END
+        LOOP JSAAAAAA
+            JSAA = 0
+            LOOP M
+                M = JSAA
+                JSAA = JSAA + 1
+            END
+            STACK.push(M)
+            LENGTH = LENGTH + 1
+            M = M + 1
+            JSAAA = 0
+            LOOP N
+                N = JSAAA
+                JSAAA = JSAAA + 1
+            END
+        END
+    END
+END

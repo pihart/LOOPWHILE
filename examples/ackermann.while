@@ -1,0 +1,28 @@
+STACK = []
+LENGTH = 1
+POPSTACK = 0
+WHILE LENGTH != 0
+    IF+ POPSTACK
+        M = STACK.pop()
+        LENGTH--
+        POPSTACK = 0
+    END
+    IF0 M
+        N++
+        POPSTACK = 1
+    END
+    IF+ M
+        NCOPY = N
+        IF0 N
+            M--
+            N++
+        END
+        IF+ NCOPY
+            M--
+            STACK.push(M)
+            LENGTH++
+            M++
+            N--
+        END
+    END
+END
