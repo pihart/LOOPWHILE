@@ -2,7 +2,7 @@
   "name": "loopwhile",
   "version": "1.0.0",
   "description": "A an interpreter for an extended syntax I wrote for the LOOP and WHILE programming languages",
-  "main": "transpilefile.js",
+  "main": "transpiler.js",
   "directories": {
     "doc": "docs",
     "example": "examples"
