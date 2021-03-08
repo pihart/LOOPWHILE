@@ -14,7 +14,10 @@
     "type": "git",
     "url": "github:pihart/LOOPWHILE"
   },
-  "author": "",
+  "author": {
+    "url": "https://pihart.github.io",
+    "name": "Avi Mehra"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/pihart/LOOPWHILE/issues"
