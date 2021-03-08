@@ -1,0 +1,15 @@
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: github-actions
+    # For GitHub Actions, set the directory to / to check for workflow files in .github/workflows.
+    # https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates#directory
+    directory: /
+    schedule:
+      interval: daily
