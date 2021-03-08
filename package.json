@@ -7,7 +7,8 @@
     "doc": "docs",
     "example": "examples"
   },
-  "scripts": {
+  "bin": {
+    "loopwhile": "transpilefile.js"
   },
   "repository": {
     "type": "git",
