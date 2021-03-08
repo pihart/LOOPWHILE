@@ -1,0 +1,22 @@
+{
+  "name": "loopwhile",
+  "version": "1.0.0",
+  "description": "A an interpreter for an extended syntax I wrote for the LOOP and WHILE programming languages",
+  "main": "transpilefile.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:pihart/LOOPWHILE"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pihart/LOOPWHILE/issues"
+  },
+  "homepage": "https://github.com/pihart/LOOPWHILE#readme"
+}
