@@ -11,7 +11,7 @@ jobs:
     if: ${{ github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'no-semver') }}
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.4.0
       - run: |
           git config --global user.name 'Avi Mehra'
           git config --global user.email 'pihart@users.noreply.github.com'
